@@ -17,7 +17,11 @@
     ],
     "require": {
         "php": "^8.3|^8.4",
-        "spatie/laravel-package-tools": "^1.14"
+        "spatie/laravel-package-tools": "^1.14",
+        "illuminate/support": "^12.0",
+        "illuminate/database": "^12.0",
+        "laravilt/support": "*",
+        "laravilt/core": "*"
     },
     "require-dev": {
         "larastan/larastan": "^2.9||^3.0",
