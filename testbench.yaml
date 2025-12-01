@@ -1,0 +1,10 @@
+providers:
+  - Laravilt\QueryBuilder\QueryBuilderServiceProvider
+
+workbench:
+  welcome: false
+  discovers:
+    web: true
+    api: true
+    commands: true
+    components: true
