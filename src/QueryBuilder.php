@@ -83,7 +83,8 @@ class QueryBuilder implements InertiaSerializable
     public function sortBy(?string $column, ?string $direction = 'asc'): static
     {
         $this->sortBy = $column;
-        $this->sortDirection = $direction;
+        // Validate sort direction
+        $this->sortDirection = in_array($direction, ['asc', 'desc']) ? $direction : 'asc';
 
         return $this;
     }
