@@ -1,0 +1,93 @@
+{
+  "name": "laravilt-query-builder",
+  "version": "1.0.0",
+  "description": "MCP Server for Laravilt Query Builder Package",
+  "mcpServers": {
+    "laravilt-query-builder-docs": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./docs"
+      ],
+      "metadata": {
+        "description": "Provides access to Laravilt Query Builder package documentation",
+        "categories": ["query", "eloquent", "filters", "sorting"]
+      }
+    }
+  },
+  "resources": [
+    {
+      "uri": "laravilt://query-builder/docs/index",
+      "name": "Laravilt Query Builder Documentation",
+      "description": "Complete documentation for the Laravilt Query Builder package",
+      "mimeType": "text/markdown"
+    },
+    {
+      "uri": "laravilt://query-builder/filters",
+      "name": "Filters Guide",
+      "description": "Guide for building query filters",
+      "mimeType": "text/markdown"
+    },
+    {
+      "uri": "laravilt://query-builder/sorts",
+      "name": "Sorting Guide",
+      "description": "Guide for implementing sortable queries",
+      "mimeType": "text/markdown"
+    }
+  ],
+  "tools": [
+    {
+      "name": "create_filter",
+      "description": "Create a new query filter",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Filter name"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["exact", "partial", "scope", "callback", "trashed"],
+            "description": "Filter type"
+          },
+          "column": {
+            "type": "string",
+            "description": "Database column to filter"
+          }
+        },
+        "required": ["name", "type"]
+      }
+    },
+    {
+      "name": "search_query_builder_docs",
+      "description": "Search the Laravilt Query Builder documentation",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "get_query_builder_example",
+      "description": "Get example code for query builder features",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "feature": {
+            "type": "string",
+            "enum": ["filters", "sorts", "includes", "pagination"],
+            "description": "Feature to get example for"
+          }
+        },
+        "required": ["feature"]
+      }
+    }
+  ]
+}

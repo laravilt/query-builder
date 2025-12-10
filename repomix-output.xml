@@ -1,0 +1,3844 @@
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: **/*.log, tmp/, .js, .html, .blade.php, .css, public/, vendor/, node_modules, venv/, logs/, electorn-sentinerl/
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.github/
+  ISSUE_TEMPLATE/
+    bug.yml
+    config.yml
+  workflows/
+    dependabot-auto-merge.yml
+    fix-php-code-styling.yml
+    tests.yml
+  CONTRIBUTING.md
+  dependabot.yml
+  FUNDING.yml
+  SECURITY.md
+config/
+  laravilt-query-builder.php
+lang/
+  ar/
+    query-builder.php
+  en/
+    query-builder.php
+resources/
+  css/
+    app.css
+  js/
+    app.js
+routes/
+  web.php
+src/
+  Commands/
+    InstallQueryBuilderCommand.php
+  Filters/
+    BooleanFilter.php
+    DateFilter.php
+    Filter.php
+    SelectFilter.php
+    TextFilter.php
+  QueryBuilder.php
+  QueryBuilderServiceProvider.php
+  Sort.php
+tests/
+  Feature/
+    DebugTest.php
+    QueryBuilderIntegrationTest.php
+  Unit/
+    Filters/
+      BooleanFilterTest.php
+      DateFilterTest.php
+      SelectFilterTest.php
+      TextFilterTest.php
+    QueryBuilderTest.php
+    SortTest.php
+  Pest.php
+  TestCase.php
+.gitignore
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+composer.json
+LICENSE.md
+package.json
+phpstan.neon
+phpunit.xml
+pint.json
+README.md
+testbench.yaml
+vite.plugin.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".github/ISSUE_TEMPLATE/bug.yml">
+name: Bug Report
+description: Report a bug
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: What version of the package are you using?
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP Version
+      description: What version of PHP are you using?
+    validations:
+      required: true
+  - type: input
+    id: laravel-version
+    attributes:
+      label: Laravel Version
+      description: What version of Laravel are you using?
+    validations:
+      required: true
+</file>
+
+<file path=".github/ISSUE_TEMPLATE/config.yml">
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/laravilt/query-builder/discussions/new?category=q-a
+    about: Ask the community for help
+  - name: Request a feature
+    url: https://github.com/laravilt/query-builder/discussions/new?category=ideas
+    about: Share ideas for new features
+</file>
+
+<file path=".github/workflows/dependabot-auto-merge.yml">
+name: Dependabot Auto-Merge
+
+on: [push, pull_request]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Auto-merge Dependabot PRs for semver-minor updates
+        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-minor'}}
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Auto-merge Dependabot PRs for semver-patch updates
+        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+</file>
+
+<file path=".github/CONTRIBUTING.md">
+# Contributing to QueryBuilder
+
+Thank you for considering contributing to QueryBuilder!
+
+## Pull Requests
+
+1. Fork the repository
+2. Create a new branch for your feature
+3. Write tests for your changes
+4. Ensure all tests pass
+5. Submit a pull request
+
+## Coding Standards
+
+- Follow PSR-12 coding standards
+- Run `composer format` before committing
+- Write tests for new features
+- Ensure PHPStan passes with level 5
+
+## Running Tests
+
+```bash
+composer test
+```
+
+## Code Style
+
+```bash
+composer format
+```
+
+## Static Analysis
+
+```bash
+composer analyse
+```
+</file>
+
+<file path=".github/dependabot.yml">
+version: 2
+updates:
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+</file>
+
+<file path=".github/FUNDING.yml">
+github: fadymondy
+</file>
+
+<file path=".github/SECURITY.md">
+# Security Policy
+
+## Reporting a Vulnerability
+
+If you discover a security vulnerability within QueryBuilder, please send an email to info@3x1.io. All security vulnerabilities will be promptly addressed.
+
+Please do not publicly disclose the issue until it has been addressed by the team.
+</file>
+
+<file path="config/laravilt-query-builder.php">
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | Plugin Settings
+    |--------------------------------------------------------------------------
+    |
+    | Configure your plugin settings here.
+    |
+    */
+
+    'enabled' => env('LARAVILT_QUERY-BUILDER_ENABLED', true),
+
+    // Add your configuration options here
+];
+</file>
+
+<file path="lang/ar/query-builder.php">
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | QueryBuilder Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used by the QueryBuilder plugin.
+    | You are free to modify these language lines according to your
+    | application's requirements.
+    |
+    */
+
+    // Add your translation messages here
+];
+</file>
+
+<file path="lang/en/query-builder.php">
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | QueryBuilder Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used by the QueryBuilder plugin.
+    | You are free to modify these language lines according to your
+    | application's requirements.
+    |
+    */
+
+    // Add your translation messages here
+];
+</file>
+
+<file path="resources/css/app.css">
+@import "tailwindcss";
+
+/**
+ * QueryBuilder Styles
+ *
+ * Custom theme configuration for Tailwind CSS v4
+ *
+ * @theme {
+ *   --color-primary: oklch(0.72 0.11 178);
+ *   --color-secondary: oklch(0.65 0.15 250);
+ * }
+ */
+</file>
+
+<file path="resources/js/app.js">
+/**
+ * QueryBuilder Plugin for Vue.js
+ *
+ * This plugin can be registered in your main Laravilt application.
+ *
+ * Example usage in app.ts:
+ *
+ * import QueryBuilderPlugin from '@/plugins/query-builder';
+ *
+ * app.use(QueryBuilderPlugin, {
+ *     // Plugin options
+ * });
+ */
+
+export default {
+    install(app, options = {}) {
+        // Plugin installation logic
+        console.log('QueryBuilder plugin installed', options);
+
+        // Register global components
+        // app.component('QueryBuilderComponent', ComponentName);
+
+        // Provide global properties
+        // app.config.globalProperties.$query-builder = {};
+
+        // Add global methods
+        // app.mixin({});
+    }
+};
+</file>
+
+<file path="routes/web.php">
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| QueryBuilder Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your plugin. These
+| routes are loaded by the ServiceProvider within a group which
+| contains the "web" middleware group.
+|
+*/
+
+Route::middleware(['web'])->group(function () {
+    // Add your web routes here
+    // Example:
+    // Route::get('/query-builder', function () {
+    //     return view('query-builder::index');
+    // });
+});
+</file>
+
+<file path="src/Filters/BooleanFilter.php">
+<?php
+
+declare(strict_types=1);
+
+namespace Laravilt\QueryBuilder\Filters;
+
+use Illuminate\Database\Eloquent\Builder;
+
+class BooleanFilter extends Filter
+{
+    protected ?string $trueLabel = null;
+
+    protected ?string $falseLabel = null;
+
+    public function trueLabel(string $label): static
+    {
+        $this->trueLabel = $label;
+
+        return $this;
+    }
+
+    public function falseLabel(string $label): static
+    {
+        $this->falseLabel = $label;
+
+        return $this;
+    }
+
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     */
+    protected function applyDefault(Builder $query, mixed $value): void
+    {
+        $column = $this->getColumn();
+        $boolValue = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+
+        $query->where($column, $boolValue);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toInertiaProps(): array
+    {
+        return [
+            ...parent::toInertiaProps(),
+            'trueLabel' => $this->trueLabel ?? 'Yes',
+            'falseLabel' => $this->falseLabel ?? 'No',
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toFlutterProps(): array
+    {
+        return [
+            ...parent::toFlutterProps(),
+            'trueLabel' => $this->trueLabel ?? 'Yes',
+            'falseLabel' => $this->falseLabel ?? 'No',
+        ];
+    }
+}
+</file>
+
+<file path="src/Filters/DateFilter.php">
+<?php
+
+declare(strict_types=1);
+
+namespace Laravilt\QueryBuilder\Filters;
+
+use Illuminate\Database\Eloquent\Builder;
+
+class DateFilter extends Filter
+{
+    protected string $operator = '=';
+
+    protected ?string $minDate = null;
+
+    protected ?string $maxDate = null;
+
+    protected bool $withTime = false;
+
+    public function operator(string $operator): static
+    {
+        $this->operator = $operator;
+
+        return $this;
+    }
+
+    public function before(): static
+    {
+        $this->operator = '<';
+
+        return $this;
+    }
+
+    public function after(): static
+    {
+        $this->operator = '>';
+
+        return $this;
+    }
+
+    public function between(): static
+    {
+        $this->operator = 'between';
+
+        return $this;
+    }
+
+    public function minDate(string $date): static
+    {
+        $this->minDate = $date;
+
+        return $this;
+    }
+
+    public function maxDate(string $date): static
+    {
+        $this->maxDate = $date;
+
+        return $this;
+    }
+
+    public function withTime(bool $condition = true): static
+    {
+        $this->withTime = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     */
+    protected function applyDefault(Builder $query, mixed $value): void
+    {
+        $column = $this->getColumn();
+
+        if ($this->operator === 'between' && is_array($value) && count($value) === 2) {
+            $query->whereBetween($column, $value);
+        } else {
+            $query->where($column, $this->operator, $value);
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toInertiaProps(): array
+    {
+        return [
+            ...parent::toInertiaProps(),
+            'operator' => $this->operator,
+            'minDate' => $this->minDate,
+            'maxDate' => $this->maxDate,
+            'withTime' => $this->withTime,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toFlutterProps(): array
+    {
+        return [
+            ...parent::toFlutterProps(),
+            'operator' => $this->operator,
+            'minDate' => $this->minDate,
+            'maxDate' => $this->maxDate,
+            'withTime' => $this->withTime,
+        ];
+    }
+}
+</file>
+
+<file path="src/Filters/Filter.php">
+<?php
+
+declare(strict_types=1);
+
+namespace Laravilt\QueryBuilder\Filters;
+
+use Closure;
+use Illuminate\Database\Eloquent\Builder;
+use Laravilt\Support\Contracts\FlutterSerializable;
+use Laravilt\Support\Contracts\InertiaSerializable;
+
+abstract class Filter implements FlutterSerializable, InertiaSerializable
+{
+    protected string $name;
+
+    protected ?string $label = null;
+
+    protected ?string $column = null;
+
+    protected ?Closure $query = null;
+
+    protected mixed $default = null;
+
+    protected bool $visible = true;
+
+    protected ?string $placeholder = null;
+
+    public function __construct(string $name)
+    {
+        $this->name = $name;
+        $this->column = $name;
+    }
+
+    public static function make(string $name): static
+    {
+        return new static($name); // @phpstan-ignore new.static
+    }
+
+    public function label(string $label): static
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    public function column(string $column): static
+    {
+        $this->column = $column;
+
+        return $this;
+    }
+
+    public function query(Closure $callback): static
+    {
+        $this->query = $callback;
+
+        return $this;
+    }
+
+    public function default(mixed $value): static
+    {
+        $this->default = $value;
+
+        return $this;
+    }
+
+    public function visible(bool $condition = true): static
+    {
+        $this->visible = $condition;
+
+        return $this;
+    }
+
+    public function placeholder(string $placeholder): static
+    {
+        $this->placeholder = $placeholder;
+
+        return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label ?? str($this->name)->headline()->toString();
+    }
+
+    public function getColumn(): string
+    {
+        return $this->column ?? $this->name;
+    }
+
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     */
+    public function apply(Builder $query, mixed $value): void
+    {
+        if ($this->query !== null) {
+            ($this->query)($query, $value);
+        } else {
+            $this->applyDefault($query, $value);
+        }
+    }
+
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     */
+    abstract protected function applyDefault(Builder $query, mixed $value): void;
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toInertiaProps(): array
+    {
+        return [
+            'type' => $this->getType(),
+            'name' => $this->name,
+            'label' => $this->getLabel(),
+            'column' => $this->getColumn(),
+            'default' => $this->default,
+            'visible' => $this->visible,
+            'placeholder' => $this->placeholder,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toFlutterProps(): array
+    {
+        return [
+            'type' => $this->getType(),
+            'name' => $this->name,
+            'label' => $this->getLabel(),
+            'column' => $this->getColumn(),
+            'default' => $this->default,
+            'visible' => $this->visible,
+            'placeholder' => $this->placeholder,
+        ];
+    }
+
+    protected function getType(): string
+    {
+        return class_basename(static::class);
+    }
+}
+</file>
+
+<file path="src/Filters/SelectFilter.php">
+<?php
+
+declare(strict_types=1);
+
+namespace Laravilt\QueryBuilder\Filters;
+
+use Illuminate\Database\Eloquent\Builder;
+
+class SelectFilter extends Filter
+{
+    /** @var array<string, string> */
+    protected array $options = [];
+
+    protected bool $multiple = false;
+
+    protected bool $searchable = false;
+
+    /**
+     * @param  array<string, string>  $options
+     */
+    public function options(array $options): static
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
+    public function multiple(bool $condition = true): static
+    {
+        $this->multiple = $condition;
+
+        return $this;
+    }
+
+    public function searchable(bool $condition = true): static
+    {
+        $this->searchable = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     */
+    protected function applyDefault(Builder $query, mixed $value): void
+    {
+        $column = $this->getColumn();
+
+        if ($this->multiple && is_array($value)) {
+            $query->whereIn($column, $value);
+        } else {
+            $query->where($column, $value);
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toInertiaProps(): array
+    {
+        return [
+            ...parent::toInertiaProps(),
+            'options' => $this->options,
+            'multiple' => $this->multiple,
+            'searchable' => $this->searchable,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toFlutterProps(): array
+    {
+        return [
+            ...parent::toFlutterProps(),
+            'options' => $this->options,
+            'multiple' => $this->multiple,
+            'searchable' => $this->searchable,
+        ];
+    }
+}
+</file>
+
+<file path="src/Filters/TextFilter.php">
+<?php
+
+declare(strict_types=1);
+
+namespace Laravilt\QueryBuilder\Filters;
+
+use Illuminate\Database\Eloquent\Builder;
+
+class TextFilter extends Filter
+{
+    protected string $operator = 'like';
+
+    protected bool $caseSensitive = false;
+
+    public function operator(string $operator): static
+    {
+        $this->operator = $operator;
+
+        return $this;
+    }
+
+    public function exact(): static
+    {
+        $this->operator = '=';
+
+        return $this;
+    }
+
+    public function contains(): static
+    {
+        $this->operator = 'like';
+
+        return $this;
+    }
+
+    public function startsWith(): static
+    {
+        $this->operator = 'starts_with';
+
+        return $this;
+    }
+
+    public function endsWith(): static
+    {
+        $this->operator = 'ends_with';
+
+        return $this;
+    }
+
+    public function caseSensitive(bool $condition = true): static
+    {
+        $this->caseSensitive = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     */
+    protected function applyDefault(Builder $query, mixed $value): void
+    {
+        $column = $this->getColumn();
+
+        match ($this->operator) {
+            'like' => $query->where($column, 'like', "%{$value}%"),
+            'starts_with' => $query->where($column, 'like', "{$value}%"),
+            'ends_with' => $query->where($column, 'like', "%{$value}"),
+            default => $query->where($column, $this->operator, $value),
+        };
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toInertiaProps(): array
+    {
+        return [
+            ...parent::toInertiaProps(),
+            'operator' => $this->operator,
+            'caseSensitive' => $this->caseSensitive,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toFlutterProps(): array
+    {
+        return [
+            ...parent::toFlutterProps(),
+            'operator' => $this->operator,
+            'caseSensitive' => $this->caseSensitive,
+        ];
+    }
+}
+</file>
+
+<file path="src/Sort.php">
+<?php
+
+declare(strict_types=1);
+
+namespace Laravilt\QueryBuilder;
+
+use Laravilt\Support\Contracts\FlutterSerializable;
+use Laravilt\Support\Contracts\InertiaSerializable;
+
+class Sort implements FlutterSerializable, InertiaSerializable
+{
+    protected string $name;
+
+    protected ?string $label = null;
+
+    protected string $column;
+
+    protected string $defaultDirection = 'asc';
+
+    protected bool $visible = true;
+
+    public function __construct(string $name, ?string $column = null)
+    {
+        $this->name = $name;
+        $this->column = $column ?? $name;
+    }
+
+    public static function make(string $name, ?string $column = null): static
+    {
+        return new static($name, $column); // @phpstan-ignore new.static
+    }
+
+    public function label(string $label): static
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    public function column(string $column): static
+    {
+        $this->column = $column;
+
+        return $this;
+    }
+
+    public function defaultDirection(string $direction): static
+    {
+        $this->defaultDirection = $direction;
+
+        return $this;
+    }
+
+    public function visible(bool $condition = true): static
+    {
+        $this->visible = $condition;
+
+        return $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getColumn(): string
+    {
+        return $this->column;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label ?? str($this->name)->headline()->toString();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toInertiaProps(): array
+    {
+        return [
+            'name' => $this->name,
+            'label' => $this->getLabel(),
+            'column' => $this->column,
+            'defaultDirection' => $this->defaultDirection,
+            'visible' => $this->visible,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toFlutterProps(): array
+    {
+        return [
+            'name' => $this->name,
+            'label' => $this->getLabel(),
+            'column' => $this->column,
+            'defaultDirection' => $this->defaultDirection,
+            'visible' => $this->visible,
+        ];
+    }
+}
+</file>
+
+<file path="tests/Feature/DebugTest.php">
+<?php
+
+it('will not use debugging functions', function () {
+    expect(['dd', 'dump', 'ray'])->each->not->toBeUsed();
+});
+</file>
+
+<file path="tests/Feature/QueryBuilderIntegrationTest.php">
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Laravilt\QueryBuilder\Filters\BooleanFilter;
+use Laravilt\QueryBuilder\Filters\DateFilter;
+use Laravilt\QueryBuilder\Filters\SelectFilter;
+use Laravilt\QueryBuilder\Filters\TextFilter;
+use Laravilt\QueryBuilder\QueryBuilder;
+use Laravilt\QueryBuilder\Sort;
+
+beforeEach(function () {
+    // Create a comprehensive test table
+    Schema::create('test_articles', function (Blueprint $table) {
+        $table->id();
+        $table->string('title');
+        $table->string('author');
+        $table->string('status');
+        $table->string('category');
+        $table->boolean('is_featured')->default(false);
+        $table->boolean('is_published')->default(true);
+        $table->integer('views')->default(0);
+        $table->timestamp('published_at')->nullable();
+        $table->timestamps();
+    });
+
+    $this->model = new class extends Model
+    {
+        protected $table = 'test_articles';
+
+        protected $guarded = [];
+
+        protected $casts = [
+            'is_featured' => 'boolean',
+            'is_published' => 'boolean',
+            'published_at' => 'datetime',
+        ];
+    };
+
+    // Insert comprehensive test data
+    $articles = [
+        ['title' => 'Laravel Best Practices', 'author' => 'John Doe', 'status' => 'published', 'category' => 'tutorial', 'is_featured' => true, 'is_published' => true, 'views' => 1500, 'published_at' => '2024-01-15'],
+        ['title' => 'Vue 3 Guide', 'author' => 'Jane Smith', 'status' => 'published', 'category' => 'tutorial', 'is_featured' => false, 'is_published' => true, 'views' => 800, 'published_at' => '2024-01-20'],
+        ['title' => 'PHP 8 Features', 'author' => 'John Doe', 'status' => 'draft', 'category' => 'news', 'is_featured' => false, 'is_published' => false, 'views' => 100, 'published_at' => null],
+        ['title' => 'Inertia.js Introduction', 'author' => 'Alice Johnson', 'status' => 'published', 'category' => 'tutorial', 'is_featured' => true, 'is_published' => true, 'views' => 2000, 'published_at' => '2024-02-01'],
+        ['title' => 'Database Optimization', 'author' => 'Bob Wilson', 'status' => 'published', 'category' => 'advanced', 'is_featured' => false, 'is_published' => true, 'views' => 1200, 'published_at' => '2024-02-10'],
+        ['title' => 'Testing with Pest', 'author' => 'Jane Smith', 'status' => 'draft', 'category' => 'tutorial', 'is_featured' => false, 'is_published' => false, 'views' => 50, 'published_at' => null],
+        ['title' => 'API Design Patterns', 'author' => 'John Doe', 'status' => 'published', 'category' => 'advanced', 'is_featured' => true, 'is_published' => true, 'views' => 1800, 'published_at' => '2024-03-01'],
+        ['title' => 'Tailwind CSS Tips', 'author' => 'Alice Johnson', 'status' => 'published', 'category' => 'tutorial', 'is_featured' => false, 'is_published' => true, 'views' => 900, 'published_at' => '2024-03-15'],
+    ];
+
+    foreach ($articles as $article) {
+        $this->model::create($article);
+    }
+});
+
+afterEach(function () {
+    Schema::dropIfExists('test_articles');
+});
+
+test('can build complete query with all filter types', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status')->options(['published' => 'Published', 'draft' => 'Draft']),
+            SelectFilter::make('category')->options(['tutorial' => 'Tutorial', 'news' => 'News', 'advanced' => 'Advanced']),
+            BooleanFilter::make('is_featured'),
+            BooleanFilter::make('is_published'),
+            TextFilter::make('author')->contains(),
+            DateFilter::make('published_at')->between(),
+        ])
+        ->sorts([
+            Sort::make('title')->label('Title'),
+            Sort::make('published_at')->label('Published Date')->defaultDirection('desc'),
+            Sort::make('views')->label('Views')->defaultDirection('desc'),
+        ])
+        ->applyFilters([
+            'status' => 'published',
+            'is_featured' => true,
+        ])
+        ->sortBy('views', 'desc')
+        ->perPage(10);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(3);
+    expect($results->first()->title)->toBe('Inertia.js Introduction'); // Highest views
+    expect($results->every(fn ($article) => $article->status === 'published' && $article->is_featured === true))->toBeTrue();
+});
+
+test('can filter by multiple select values', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('category')->multiple(),
+        ])
+        ->applyFilters([
+            'category' => ['tutorial', 'advanced'],
+        ]);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(7);
+    expect($results->whereIn('category', ['tutorial', 'advanced'])->count())->toBe(7);
+});
+
+test('can filter by text with contains operator', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            TextFilter::make('title')->contains(),
+        ])
+        ->applyFilters([
+            'title' => 'Laravel',
+        ]);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->title)->toBe('Laravel Best Practices');
+});
+
+test('can filter by date range', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            DateFilter::make('published_at')->between(),
+        ])
+        ->applyFilters([
+            'published_at' => ['2024-02-01', '2024-03-31'],
+        ]);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(4);
+    expect($results->pluck('title')->toArray())->toBe([
+        'Inertia.js Introduction',
+        'Database Optimization',
+        'API Design Patterns',
+        'Tailwind CSS Tips',
+    ]);
+});
+
+test('can combine multiple filters and sorting', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status'),
+            SelectFilter::make('category'),
+            BooleanFilter::make('is_published'),
+        ])
+        ->applyFilters([
+            'status' => 'published',
+            'category' => 'tutorial',
+            'is_published' => true,
+        ])
+        ->sortBy('views', 'desc');
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(4);
+    expect($results->first()->title)->toBe('Inertia.js Introduction'); // Highest views in tutorial
+    expect($results->last()->title)->toBe('Vue 3 Guide'); // Lowest views in tutorial
+});
+
+test('can filter by author using text filter', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            TextFilter::make('author')->exact(),
+        ])
+        ->applyFilters([
+            'author' => 'John Doe',
+        ]);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(3);
+    expect($results->every(fn ($article) => $article->author === 'John Doe'))->toBeTrue();
+});
+
+test('serializes complete query builder to inertia props', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status')->options(['published' => 'Published', 'draft' => 'Draft']),
+            BooleanFilter::make('is_featured'),
+            TextFilter::make('title')->contains(),
+        ])
+        ->sorts([
+            Sort::make('title')->label('Title'),
+            Sort::make('views')->label('Views')->defaultDirection('desc'),
+        ])
+        ->applyFilters(['status' => 'published'])
+        ->search('Laravel')
+        ->sortBy('views', 'desc')
+        ->perPage(20);
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props)->toHaveKeys([
+        'filters',
+        'sorts',
+        'filterValues',
+        'search',
+        'sortBy',
+        'sortDirection',
+        'perPage',
+        'paginated',
+    ]);
+
+    expect($props['filters'])->toHaveCount(3);
+    expect($props['sorts'])->toHaveCount(2);
+    expect($props['filterValues'])->toBe(['status' => 'published']);
+    expect($props['search'])->toBe('Laravel');
+    expect($props['sortBy'])->toBe('views');
+    expect($props['sortDirection'])->toBe('desc');
+    expect($props['perPage'])->toBe(20);
+});
+
+test('can use custom query closures for complex filtering', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status')
+                ->query(function ($query, $value) {
+                    if ($value === 'published') {
+                        $query->where('status', 'published')
+                            ->where('is_published', true)
+                            ->whereNotNull('published_at');
+                    }
+                }),
+        ])
+        ->applyFilters(['status' => 'published']);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(6);
+    expect($results->every(fn ($article) => $article->status === 'published' && $article->is_published === true))->toBeTrue();
+});
+
+test('handles empty filter values gracefully', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status'),
+            TextFilter::make('title'),
+            BooleanFilter::make('is_featured'),
+        ])
+        ->applyFilters([
+            'status' => null,
+            'title' => '',
+            'is_featured' => null,
+        ]);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(8); // All records
+});
+
+test('can sort by multiple columns in sequence', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder->sortBy('author', 'asc');
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results->first()->author)->toBe('Alice Johnson');
+    expect($results->last()->author)->toBe('John Doe');
+});
+
+test('supports complex real-world scenario', function () {
+    // Scenario: Get featured, published articles from tutorials or advanced categories,
+    // published in February 2024, sorted by views descending
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('category')->multiple(),
+            BooleanFilter::make('is_featured'),
+            BooleanFilter::make('is_published'),
+            DateFilter::make('published_at')->between(),
+        ])
+        ->applyFilters([
+            'category' => ['tutorial', 'advanced'],
+            'is_featured' => true,
+            'is_published' => true,
+            'published_at' => ['2024-02-01', '2024-02-28'],
+        ])
+        ->sortBy('views', 'desc');
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->title)->toBe('Inertia.js Introduction');
+    expect($results->first()->is_featured)->toBeTrue();
+    expect($results->first()->views)->toBe(2000);
+});
+</file>
+
+<file path="tests/Unit/Filters/BooleanFilterTest.php">
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Laravilt\QueryBuilder\Filters\BooleanFilter;
+
+beforeEach(function () {
+    Schema::create('test_users', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->boolean('is_active')->default(true);
+        $table->boolean('is_verified')->default(false);
+        $table->timestamps();
+    });
+
+    $this->model = new class extends Model
+    {
+        protected $table = 'test_users';
+
+        protected $guarded = [];
+
+        protected $casts = [
+            'is_active' => 'boolean',
+            'is_verified' => 'boolean',
+        ];
+    };
+
+    // Insert test data
+    $this->model::create(['name' => 'User 1', 'is_active' => true, 'is_verified' => true]);
+    $this->model::create(['name' => 'User 2', 'is_active' => false, 'is_verified' => false]);
+    $this->model::create(['name' => 'User 3', 'is_active' => true, 'is_verified' => false]);
+    $this->model::create(['name' => 'User 4', 'is_active' => false, 'is_verified' => true]);
+});
+
+afterEach(function () {
+    Schema::dropIfExists('test_users');
+});
+
+test('can create boolean filter instance', function () {
+    $filter = BooleanFilter::make('is_active');
+
+    expect($filter)->toBeInstanceOf(BooleanFilter::class);
+    expect($filter->getName())->toBe('is_active');
+});
+
+test('can set label', function () {
+    $filter = BooleanFilter::make('is_active')
+        ->label('Active Status');
+
+    expect($filter->getLabel())->toBe('Active Status');
+});
+
+test('can set custom column', function () {
+    $filter = BooleanFilter::make('active')
+        ->column('is_active');
+
+    expect($filter->getColumn())->toBe('is_active');
+});
+
+test('can set true label', function () {
+    $filter = BooleanFilter::make('is_active')
+        ->trueLabel('Active');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['trueLabel'])->toBe('Active');
+});
+
+test('can set false label', function () {
+    $filter = BooleanFilter::make('is_active')
+        ->falseLabel('Inactive');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['falseLabel'])->toBe('Inactive');
+});
+
+test('can set default value', function () {
+    $filter = BooleanFilter::make('is_active')
+        ->default(true);
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['default'])->toBe(true);
+});
+
+test('applies true value to query', function () {
+    $filter = BooleanFilter::make('is_active');
+
+    $query = $this->model::query();
+    $filter->apply($query, true);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->every(fn ($user) => $user->is_active === true))->toBeTrue();
+});
+
+test('applies false value to query', function () {
+    $filter = BooleanFilter::make('is_active');
+
+    $query = $this->model::query();
+    $filter->apply($query, false);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->every(fn ($user) => $user->is_active === false))->toBeTrue();
+});
+
+test('applies string "true" value to query', function () {
+    $filter = BooleanFilter::make('is_active');
+
+    $query = $this->model::query();
+    $filter->apply($query, 'true');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->every(fn ($user) => $user->is_active === true))->toBeTrue();
+});
+
+test('applies string "false" value to query', function () {
+    $filter = BooleanFilter::make('is_active');
+
+    $query = $this->model::query();
+    $filter->apply($query, 'false');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->every(fn ($user) => $user->is_active === false))->toBeTrue();
+});
+
+test('applies integer 1 value to query', function () {
+    $filter = BooleanFilter::make('is_active');
+
+    $query = $this->model::query();
+    $filter->apply($query, 1);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->every(fn ($user) => $user->is_active === true))->toBeTrue();
+});
+
+test('applies integer 0 value to query', function () {
+    $filter = BooleanFilter::make('is_active');
+
+    $query = $this->model::query();
+    $filter->apply($query, 0);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->every(fn ($user) => $user->is_active === false))->toBeTrue();
+});
+
+test('applies custom query closure', function () {
+    $filter = BooleanFilter::make('is_active')
+        ->query(function ($query, $value) {
+            if ($value) {
+                $query->where('is_active', true)->where('is_verified', true);
+            } else {
+                $query->where('is_active', false);
+            }
+        });
+
+    $query = $this->model::query();
+    $filter->apply($query, true);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBe('User 1');
+});
+
+test('serializes to inertia props correctly', function () {
+    $filter = BooleanFilter::make('is_active')
+        ->label('Active Status')
+        ->trueLabel('Active')
+        ->falseLabel('Inactive')
+        ->default(true);
+
+    $props = $filter->toInertiaProps();
+
+    expect($props)->toMatchArray([
+        'type' => 'BooleanFilter',
+        'name' => 'is_active',
+        'label' => 'Active Status',
+        'column' => 'is_active',
+        'trueLabel' => 'Active',
+        'falseLabel' => 'Inactive',
+        'default' => true,
+        'visible' => true,
+    ]);
+});
+
+test('serializes to flutter props correctly', function () {
+    $filter = BooleanFilter::make('is_active')
+        ->trueLabel('Active')
+        ->falseLabel('Inactive');
+
+    $props = $filter->toFlutterProps();
+
+    expect($props)->toHaveKeys([
+        'type',
+        'name',
+        'label',
+        'column',
+        'trueLabel',
+        'falseLabel',
+        'default',
+        'visible',
+        'placeholder',
+    ]);
+});
+
+test('returns correct default values', function () {
+    $filter = BooleanFilter::make('is_active');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['trueLabel'])->toBe('Yes');
+    expect($props['falseLabel'])->toBe('No');
+    expect($props['visible'])->toBe(true);
+});
+</file>
+
+<file path="tests/Unit/Filters/DateFilterTest.php">
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Laravilt\QueryBuilder\Filters\DateFilter;
+
+beforeEach(function () {
+    Schema::create('test_posts', function (Blueprint $table) {
+        $table->id();
+        $table->string('title');
+        $table->timestamp('published_at')->nullable();
+        $table->timestamps();
+    });
+
+    $this->model = new class extends Model
+    {
+        protected $table = 'test_posts';
+
+        protected $guarded = [];
+
+        protected $casts = [
+            'published_at' => 'datetime',
+        ];
+    };
+
+    // Insert test data
+    $this->model::create(['title' => 'Post 1', 'published_at' => '2024-01-01']);
+    $this->model::create(['title' => 'Post 2', 'published_at' => '2024-01-15']);
+    $this->model::create(['title' => 'Post 3', 'published_at' => '2024-02-01']);
+    $this->model::create(['title' => 'Post 4', 'published_at' => '2024-03-01']);
+});
+
+afterEach(function () {
+    Schema::dropIfExists('test_posts');
+});
+
+test('can create date filter instance', function () {
+    $filter = DateFilter::make('published_at');
+
+    expect($filter)->toBeInstanceOf(DateFilter::class);
+    expect($filter->getName())->toBe('published_at');
+});
+
+test('can set label', function () {
+    $filter = DateFilter::make('published_at')
+        ->label('Publication Date');
+
+    expect($filter->getLabel())->toBe('Publication Date');
+});
+
+test('can set custom column', function () {
+    $filter = DateFilter::make('publish_date')
+        ->column('published_at');
+
+    expect($filter->getColumn())->toBe('published_at');
+});
+
+test('can set operator', function () {
+    $filter = DateFilter::make('published_at')
+        ->operator('>');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('>');
+});
+
+test('can set before operator', function () {
+    $filter = DateFilter::make('published_at')
+        ->before();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('<');
+});
+
+test('can set after operator', function () {
+    $filter = DateFilter::make('published_at')
+        ->after();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('>');
+});
+
+test('can set between operator', function () {
+    $filter = DateFilter::make('published_at')
+        ->between();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('between');
+});
+
+test('can set min date', function () {
+    $filter = DateFilter::make('published_at')
+        ->minDate('2024-01-01');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['minDate'])->toBe('2024-01-01');
+});
+
+test('can set max date', function () {
+    $filter = DateFilter::make('published_at')
+        ->maxDate('2024-12-31');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['maxDate'])->toBe('2024-12-31');
+});
+
+test('can enable with time', function () {
+    $filter = DateFilter::make('published_at')
+        ->withTime();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['withTime'])->toBeTrue();
+});
+
+test('applies equal operator to query', function () {
+    $filter = DateFilter::make('published_at');
+
+    $query = $this->model::query();
+    $filter->apply($query, '2024-01-01 00:00:00');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->title)->toBe('Post 1');
+});
+
+test('applies before operator to query', function () {
+    $filter = DateFilter::make('published_at')
+        ->before();
+
+    $query = $this->model::query();
+    $filter->apply($query, '2024-02-01');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+});
+
+test('applies after operator to query', function () {
+    $filter = DateFilter::make('published_at')
+        ->after();
+
+    $query = $this->model::query();
+    $filter->apply($query, '2024-01-15 23:59:59');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+});
+
+test('applies between operator to query', function () {
+    $filter = DateFilter::make('published_at')
+        ->between();
+
+    $query = $this->model::query();
+    $filter->apply($query, ['2024-01-10', '2024-02-10']);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('title')->toArray())->toBe(['Post 2', 'Post 3']);
+});
+
+test('applies custom query closure', function () {
+    $filter = DateFilter::make('published_at')
+        ->query(function ($query, $value) {
+            $query->whereYear('published_at', '2024');
+        });
+
+    $query = $this->model::query();
+    $filter->apply($query, '2024');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(4);
+});
+
+test('serializes to inertia props correctly', function () {
+    $filter = DateFilter::make('published_at')
+        ->label('Publication Date')
+        ->between()
+        ->minDate('2024-01-01')
+        ->maxDate('2024-12-31')
+        ->withTime();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props)->toMatchArray([
+        'type' => 'DateFilter',
+        'name' => 'published_at',
+        'label' => 'Publication Date',
+        'column' => 'published_at',
+        'operator' => 'between',
+        'minDate' => '2024-01-01',
+        'maxDate' => '2024-12-31',
+        'withTime' => true,
+        'visible' => true,
+    ]);
+});
+
+test('serializes to flutter props correctly', function () {
+    $filter = DateFilter::make('published_at')
+        ->between();
+
+    $props = $filter->toFlutterProps();
+
+    expect($props)->toHaveKeys([
+        'type',
+        'name',
+        'label',
+        'column',
+        'operator',
+        'minDate',
+        'maxDate',
+        'withTime',
+        'default',
+        'visible',
+        'placeholder',
+    ]);
+});
+
+test('returns correct default values', function () {
+    $filter = DateFilter::make('published_at');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('=');
+    expect($props['minDate'])->toBeNull();
+    expect($props['maxDate'])->toBeNull();
+    expect($props['withTime'])->toBe(false);
+    expect($props['visible'])->toBe(true);
+});
+</file>
+
+<file path="tests/Unit/Filters/SelectFilterTest.php">
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Laravilt\QueryBuilder\Filters\SelectFilter;
+
+beforeEach(function () {
+    Schema::create('test_users', function (Blueprint $table) {
+        $table->id();
+        $table->string('status');
+        $table->string('role');
+        $table->timestamps();
+    });
+
+    $this->model = new class extends Model
+    {
+        protected $table = 'test_users';
+
+        protected $guarded = [];
+    };
+
+    // Insert test data
+    $this->model::create(['status' => 'active', 'role' => 'admin']);
+    $this->model::create(['status' => 'inactive', 'role' => 'user']);
+    $this->model::create(['status' => 'active', 'role' => 'user']);
+    $this->model::create(['status' => 'pending', 'role' => 'admin']);
+});
+
+afterEach(function () {
+    Schema::dropIfExists('test_users');
+});
+
+test('can create select filter instance', function () {
+    $filter = SelectFilter::make('status');
+
+    expect($filter)->toBeInstanceOf(SelectFilter::class);
+    expect($filter->getName())->toBe('status');
+});
+
+test('can set options', function () {
+    $filter = SelectFilter::make('status')
+        ->options([
+            'active' => 'Active',
+            'inactive' => 'Inactive',
+        ]);
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['options'])->toBe([
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+    ]);
+});
+
+test('can set label', function () {
+    $filter = SelectFilter::make('status')
+        ->label('User Status');
+
+    expect($filter->getLabel())->toBe('User Status');
+});
+
+test('can set custom column', function () {
+    $filter = SelectFilter::make('user_status')
+        ->column('status');
+
+    expect($filter->getColumn())->toBe('status');
+});
+
+test('can enable multiple selection', function () {
+    $filter = SelectFilter::make('status')
+        ->multiple();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['multiple'])->toBeTrue();
+});
+
+test('can enable searchable', function () {
+    $filter = SelectFilter::make('status')
+        ->searchable();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['searchable'])->toBeTrue();
+});
+
+test('can set default value', function () {
+    $filter = SelectFilter::make('status')
+        ->default('active');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['default'])->toBe('active');
+});
+
+test('can set visibility', function () {
+    $filter = SelectFilter::make('status')
+        ->visible(false);
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['visible'])->toBe(false);
+});
+
+test('can set placeholder', function () {
+    $filter = SelectFilter::make('status')
+        ->placeholder('Select status...');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['placeholder'])->toBe('Select status...');
+});
+
+test('applies single value filter to query', function () {
+    $filter = SelectFilter::make('status');
+
+    $query = $this->model::query();
+    $filter->apply($query, 'active');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->every(fn ($user) => $user->status === 'active'))->toBeTrue();
+});
+
+test('applies multiple values filter to query', function () {
+    $filter = SelectFilter::make('status')
+        ->multiple();
+
+    $query = $this->model::query();
+    $filter->apply($query, ['active', 'pending']);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(3);
+    expect($results->whereIn('status', ['active', 'pending'])->count())->toBe(3);
+});
+
+test('applies custom query closure', function () {
+    $filter = SelectFilter::make('status')
+        ->query(function ($query, $value) {
+            $query->where('status', '!=', $value);
+        });
+
+    $query = $this->model::query();
+    $filter->apply($query, 'active');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->every(fn ($user) => $user->status !== 'active'))->toBeTrue();
+});
+
+test('serializes to inertia props correctly', function () {
+    $filter = SelectFilter::make('status')
+        ->label('User Status')
+        ->options(['active' => 'Active', 'inactive' => 'Inactive'])
+        ->multiple()
+        ->searchable()
+        ->default('active')
+        ->placeholder('Select status...');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props)->toMatchArray([
+        'type' => 'SelectFilter',
+        'name' => 'status',
+        'label' => 'User Status',
+        'column' => 'status',
+        'options' => ['active' => 'Active', 'inactive' => 'Inactive'],
+        'multiple' => true,
+        'searchable' => true,
+        'default' => 'active',
+        'visible' => true,
+        'placeholder' => 'Select status...',
+    ]);
+});
+
+test('serializes to flutter props correctly', function () {
+    $filter = SelectFilter::make('status')
+        ->label('User Status')
+        ->options(['active' => 'Active'])
+        ->multiple();
+
+    $props = $filter->toFlutterProps();
+
+    expect($props)->toHaveKeys([
+        'type',
+        'name',
+        'label',
+        'column',
+        'options',
+        'multiple',
+        'searchable',
+        'default',
+        'visible',
+        'placeholder',
+    ]);
+});
+
+test('returns correct default values', function () {
+    $filter = SelectFilter::make('status');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['multiple'])->toBe(false);
+    expect($props['searchable'])->toBe(false);
+    expect($props['visible'])->toBe(true);
+    expect($props['options'])->toBe([]);
+});
+</file>
+
+<file path="tests/Unit/Filters/TextFilterTest.php">
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Laravilt\QueryBuilder\Filters\TextFilter;
+
+beforeEach(function () {
+    Schema::create('test_products', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('sku');
+        $table->text('description');
+        $table->timestamps();
+    });
+
+    $this->model = new class extends Model
+    {
+        protected $table = 'test_products';
+
+        protected $guarded = [];
+    };
+
+    // Insert test data
+    $this->model::create(['name' => 'iPhone 15', 'sku' => 'IPH-15-BLK', 'description' => 'Latest iPhone model']);
+    $this->model::create(['name' => 'Samsung Galaxy', 'sku' => 'SAM-GAL-WHT', 'description' => 'Android smartphone']);
+    $this->model::create(['name' => 'iPhone 14', 'sku' => 'IPH-14-BLU', 'description' => 'Previous iPhone model']);
+    $this->model::create(['name' => 'Google Pixel', 'sku' => 'GOO-PIX-GRN', 'description' => 'Google phone']);
+});
+
+afterEach(function () {
+    Schema::dropIfExists('test_products');
+});
+
+test('can create text filter instance', function () {
+    $filter = TextFilter::make('name');
+
+    expect($filter)->toBeInstanceOf(TextFilter::class);
+    expect($filter->getName())->toBe('name');
+});
+
+test('can set label', function () {
+    $filter = TextFilter::make('name')
+        ->label('Product Name');
+
+    expect($filter->getLabel())->toBe('Product Name');
+});
+
+test('can set custom column', function () {
+    $filter = TextFilter::make('product_name')
+        ->column('name');
+
+    expect($filter->getColumn())->toBe('name');
+});
+
+test('can set operator', function () {
+    $filter = TextFilter::make('name')
+        ->operator('=');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('=');
+});
+
+test('can set exact operator', function () {
+    $filter = TextFilter::make('name')
+        ->exact();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('=');
+});
+
+test('can set contains operator', function () {
+    $filter = TextFilter::make('name')
+        ->contains();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('like');
+});
+
+test('can set starts with operator', function () {
+    $filter = TextFilter::make('name')
+        ->startsWith();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('starts_with');
+});
+
+test('can set ends with operator', function () {
+    $filter = TextFilter::make('name')
+        ->endsWith();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('ends_with');
+});
+
+test('can set case sensitive', function () {
+    $filter = TextFilter::make('name')
+        ->caseSensitive();
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['caseSensitive'])->toBeTrue();
+});
+
+test('applies contains operator to query', function () {
+    $filter = TextFilter::make('name')
+        ->contains();
+
+    $query = $this->model::query();
+    $filter->apply($query, 'iPhone');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('name')->toArray())->toBe(['iPhone 15', 'iPhone 14']);
+});
+
+test('applies exact operator to query', function () {
+    $filter = TextFilter::make('name')
+        ->exact();
+
+    $query = $this->model::query();
+    $filter->apply($query, 'iPhone 15');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBe('iPhone 15');
+});
+
+test('applies starts with operator to query', function () {
+    $filter = TextFilter::make('sku')
+        ->startsWith();
+
+    $query = $this->model::query();
+    $filter->apply($query, 'IPH');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+    expect($results->pluck('name')->toArray())->toBe(['iPhone 15', 'iPhone 14']);
+});
+
+test('applies ends with operator to query', function () {
+    $filter = TextFilter::make('sku')
+        ->endsWith();
+
+    $query = $this->model::query();
+    $filter->apply($query, 'WHT');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(1);
+    expect($results->first()->name)->toBe('Samsung Galaxy');
+});
+
+test('applies default like operator to query', function () {
+    $filter = TextFilter::make('description');
+
+    $query = $this->model::query();
+    $filter->apply($query, 'iPhone');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+});
+
+test('applies custom query closure', function () {
+    $filter = TextFilter::make('name')
+        ->query(function ($query, $value) {
+            $query->where('name', 'like', "%{$value}%")
+                ->orWhere('description', 'like', "%{$value}%");
+        });
+
+    $query = $this->model::query();
+    $filter->apply($query, 'iPhone');
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(2);
+});
+
+test('serializes to inertia props correctly', function () {
+    $filter = TextFilter::make('name')
+        ->label('Product Name')
+        ->contains()
+        ->caseSensitive()
+        ->placeholder('Search products...');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props)->toMatchArray([
+        'type' => 'TextFilter',
+        'name' => 'name',
+        'label' => 'Product Name',
+        'column' => 'name',
+        'operator' => 'like',
+        'caseSensitive' => true,
+        'visible' => true,
+        'placeholder' => 'Search products...',
+    ]);
+});
+
+test('serializes to flutter props correctly', function () {
+    $filter = TextFilter::make('name')
+        ->contains();
+
+    $props = $filter->toFlutterProps();
+
+    expect($props)->toHaveKeys([
+        'type',
+        'name',
+        'label',
+        'column',
+        'operator',
+        'caseSensitive',
+        'default',
+        'visible',
+        'placeholder',
+    ]);
+});
+
+test('returns correct default values', function () {
+    $filter = TextFilter::make('name');
+
+    $props = $filter->toInertiaProps();
+
+    expect($props['operator'])->toBe('like');
+    expect($props['caseSensitive'])->toBe(false);
+    expect($props['visible'])->toBe(true);
+});
+</file>
+
+<file path="tests/Unit/QueryBuilderTest.php">
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Laravilt\QueryBuilder\Filters\BooleanFilter;
+use Laravilt\QueryBuilder\Filters\SelectFilter;
+use Laravilt\QueryBuilder\Filters\TextFilter;
+use Laravilt\QueryBuilder\QueryBuilder;
+use Laravilt\QueryBuilder\Sort;
+
+beforeEach(function () {
+    // Create a test table
+    Schema::create('test_users', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('email');
+        $table->string('status');
+        $table->boolean('is_active')->default(true);
+        $table->timestamps();
+    });
+
+    // Create test model
+    $this->model = new class extends Model
+    {
+        protected $table = 'test_users';
+
+        protected $guarded = [];
+    };
+
+    // Insert test data
+    for ($i = 1; $i <= 20; $i++) {
+        $this->model::create([
+            'name' => "User {$i}",
+            'email' => "user{$i}@example.com",
+            'status' => $i % 2 === 0 ? 'active' : 'inactive',
+            'is_active' => $i % 3 === 0,
+        ]);
+    }
+});
+
+afterEach(function () {
+    Schema::dropIfExists('test_users');
+});
+
+test('can create query builder instance', function () {
+    $queryBuilder = new QueryBuilder;
+
+    expect($queryBuilder)->toBeInstanceOf(QueryBuilder::class);
+});
+
+test('can add filters using filters method', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $filters = [
+        SelectFilter::make('status')->options(['active' => 'Active', 'inactive' => 'Inactive']),
+        TextFilter::make('name'),
+    ];
+
+    $queryBuilder->filters($filters);
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['filters'])->toHaveCount(2);
+    expect($props['filters'][0]['name'])->toBe('status');
+    expect($props['filters'][1]['name'])->toBe('name');
+});
+
+test('can add single filter using addFilter method', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder->addFilter(SelectFilter::make('status')->options(['active' => 'Active']));
+    $queryBuilder->addFilter(TextFilter::make('name'));
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['filters'])->toHaveCount(2);
+});
+
+test('can add sorts using sorts method', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $sorts = [
+        Sort::make('name')->label('Name'),
+        Sort::make('created_at')->label('Date'),
+    ];
+
+    $queryBuilder->sorts($sorts);
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['sorts'])->toHaveCount(2);
+    expect($props['sorts'][0]['name'])->toBe('name');
+    expect($props['sorts'][1]['name'])->toBe('created_at');
+});
+
+test('can add single sort using addSort method', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder->addSort(Sort::make('name')->label('Name'));
+    $queryBuilder->addSort(Sort::make('created_at')->label('Date'));
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['sorts'])->toHaveCount(2);
+});
+
+test('can apply filter values', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder->applyFilters([
+        'status' => 'active',
+        'name' => 'John',
+    ]);
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['filterValues'])->toBe([
+        'status' => 'active',
+        'name' => 'John',
+    ]);
+});
+
+test('can set search query', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder->search('test query');
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['search'])->toBe('test query');
+});
+
+test('can set sort by and direction', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder->sortBy('name', 'desc');
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['sortBy'])->toBe('name');
+    expect($props['sortDirection'])->toBe('desc');
+});
+
+test('can set per page value', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder->perPage(25);
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['perPage'])->toBe(25);
+});
+
+test('can set paginated state', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder->paginated(false);
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['paginated'])->toBe(false);
+});
+
+test('applies filters to eloquent query', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status'),
+        ])
+        ->applyFilters(['status' => 'active']);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(10);
+    expect($results->every(fn ($user) => $user->status === 'active'))->toBeTrue();
+});
+
+test('applies sorting to eloquent query', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder->sortBy('name', 'desc');
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results->first()->name)->toBe('User 9');
+});
+
+test('applies multiple filters to eloquent query', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status'),
+            BooleanFilter::make('is_active'),
+        ])
+        ->applyFilters([
+            'status' => 'active',
+            'is_active' => true,
+        ]);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results->every(fn ($user) => $user->status === 'active' && $user->is_active))->toBeTrue();
+});
+
+test('ignores null or empty filter values', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status'),
+            TextFilter::make('name'),
+        ])
+        ->applyFilters([
+            'status' => null,
+            'name' => '',
+        ]);
+
+    $query = $this->model::query();
+    $queryBuilder->apply($query);
+
+    $results = $query->get();
+
+    expect($results)->toHaveCount(20); // All records returned
+});
+
+test('serializes to inertia props correctly', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status')->options(['active' => 'Active']),
+        ])
+        ->sorts([
+            Sort::make('name')->label('Name'),
+        ])
+        ->applyFilters(['status' => 'active'])
+        ->search('test')
+        ->sortBy('name', 'asc')
+        ->perPage(25)
+        ->paginated(true);
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props)->toHaveKeys([
+        'filters',
+        'sorts',
+        'filterValues',
+        'search',
+        'sortBy',
+        'sortDirection',
+        'perPage',
+        'paginated',
+    ]);
+
+    expect($props['filters'])->toHaveCount(1);
+    expect($props['sorts'])->toHaveCount(1);
+    expect($props['filterValues'])->toBe(['status' => 'active']);
+    expect($props['search'])->toBe('test');
+    expect($props['sortBy'])->toBe('name');
+    expect($props['sortDirection'])->toBe('asc');
+    expect($props['perPage'])->toBe(25);
+    expect($props['paginated'])->toBeTrue();
+});
+
+test('serializes to flutter props correctly', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $queryBuilder
+        ->filters([
+            SelectFilter::make('status')->options(['active' => 'Active']),
+        ])
+        ->sorts([
+            Sort::make('name')->label('Name'),
+        ])
+        ->applyFilters(['status' => 'active'])
+        ->search('test')
+        ->sortBy('name', 'asc')
+        ->perPage(25)
+        ->paginated(true);
+
+    $props = $queryBuilder->toFlutterProps();
+
+    expect($props)->toHaveKeys([
+        'filters',
+        'sorts',
+        'filterValues',
+        'search',
+        'sortBy',
+        'sortDirection',
+        'perPage',
+        'paginated',
+    ]);
+});
+
+test('returns correct default values', function () {
+    $queryBuilder = new QueryBuilder;
+
+    $props = $queryBuilder->toInertiaProps();
+
+    expect($props['filters'])->toBe([]);
+    expect($props['sorts'])->toBe([]);
+    expect($props['filterValues'])->toBe([]);
+    expect($props['search'])->toBeNull();
+    expect($props['sortBy'])->toBeNull();
+    expect($props['sortDirection'])->toBe('asc');
+    expect($props['perPage'])->toBe(15);
+    expect($props['paginated'])->toBeTrue();
+});
+</file>
+
+<file path="tests/Unit/SortTest.php">
+<?php
+
+declare(strict_types=1);
+
+use Laravilt\QueryBuilder\Sort;
+
+test('can create sort instance', function () {
+    $sort = Sort::make('name');
+
+    expect($sort)->toBeInstanceOf(Sort::class);
+    expect($sort->getName())->toBe('name');
+});
+
+test('can create sort with custom column', function () {
+    $sort = Sort::make('user_name', 'name');
+
+    expect($sort->getName())->toBe('user_name');
+    expect($sort->getColumn())->toBe('name');
+});
+
+test('can set label', function () {
+    $sort = Sort::make('name')
+        ->label('User Name');
+
+    expect($sort->getLabel())->toBe('User Name');
+});
+
+test('generates label from name if not provided', function () {
+    $sort = Sort::make('created_at');
+
+    expect($sort->getLabel())->toBe('Created At');
+});
+
+test('can set custom column', function () {
+    $sort = Sort::make('name')
+        ->column('users.name');
+
+    expect($sort->getColumn())->toBe('users.name');
+});
+
+test('can set default direction', function () {
+    $sort = Sort::make('name')
+        ->defaultDirection('desc');
+
+    $props = $sort->toInertiaProps();
+
+    expect($props['defaultDirection'])->toBe('desc');
+});
+
+test('can set visibility', function () {
+    $sort = Sort::make('name')
+        ->visible(false);
+
+    $props = $sort->toInertiaProps();
+
+    expect($props['visible'])->toBe(false);
+});
+
+test('serializes to inertia props correctly', function () {
+    $sort = Sort::make('name')
+        ->label('User Name')
+        ->column('users.name')
+        ->defaultDirection('desc')
+        ->visible(true);
+
+    $props = $sort->toInertiaProps();
+
+    expect($props)->toMatchArray([
+        'name' => 'name',
+        'label' => 'User Name',
+        'column' => 'users.name',
+        'defaultDirection' => 'desc',
+        'visible' => true,
+    ]);
+});
+
+test('serializes to flutter props correctly', function () {
+    $sort = Sort::make('name')
+        ->label('User Name')
+        ->defaultDirection('desc');
+
+    $props = $sort->toFlutterProps();
+
+    expect($props)->toHaveKeys([
+        'name',
+        'label',
+        'column',
+        'defaultDirection',
+        'visible',
+    ]);
+
+    expect($props)->toMatchArray([
+        'name' => 'name',
+        'label' => 'User Name',
+        'column' => 'name',
+        'defaultDirection' => 'desc',
+        'visible' => true,
+    ]);
+});
+
+test('returns correct default values', function () {
+    $sort = Sort::make('name');
+
+    $props = $sort->toInertiaProps();
+
+    expect($props['name'])->toBe('name');
+    expect($props['column'])->toBe('name');
+    expect($props['defaultDirection'])->toBe('asc');
+    expect($props['visible'])->toBe(true);
+});
+
+test('uses name as column when column not provided', function () {
+    $sort = Sort::make('created_at');
+
+    expect($sort->getColumn())->toBe('created_at');
+});
+
+test('can chain multiple methods', function () {
+    $sort = Sort::make('name')
+        ->label('User Name')
+        ->column('users.name')
+        ->defaultDirection('desc')
+        ->visible(true);
+
+    expect($sort->getName())->toBe('name');
+    expect($sort->getLabel())->toBe('User Name');
+    expect($sort->getColumn())->toBe('users.name');
+});
+
+test('supports both asc and desc directions', function () {
+    $sortAsc = Sort::make('name')->defaultDirection('asc');
+    $sortDesc = Sort::make('name')->defaultDirection('desc');
+
+    expect($sortAsc->toInertiaProps()['defaultDirection'])->toBe('asc');
+    expect($sortDesc->toInertiaProps()['defaultDirection'])->toBe('desc');
+});
+
+test('can make multiple sorts with different configurations', function () {
+    $sorts = [
+        Sort::make('name')->label('Name')->defaultDirection('asc'),
+        Sort::make('email')->label('Email')->defaultDirection('asc'),
+        Sort::make('created_at')->label('Created')->defaultDirection('desc'),
+    ];
+
+    expect($sorts)->toHaveCount(3);
+    expect($sorts[0]->getName())->toBe('name');
+    expect($sorts[1]->getName())->toBe('email');
+    expect($sorts[2]->getName())->toBe('created_at');
+    expect($sorts[2]->toInertiaProps()['defaultDirection'])->toBe('desc');
+});
+</file>
+
+<file path="tests/Pest.php">
+<?php
+
+use Laravilt\QueryBuilder\Tests\TestCase;
+
+uses(TestCase::class)->in(__DIR__);
+</file>
+
+<file path=".gitignore">
+.idea
+.phpunit.cache
+.phpunit.result.cache
+.DS_Store
+Thumbs.db
+/vendor/
+/node_modules/
+/.vscode/
+composer.lock
+package-lock.json
+*.log
+.env
+.env.backup
+.env.production
+/dist/
+/build/
+</file>
+
+<file path="CHANGELOG.md">
+# Changelog
+
+All notable changes to `QueryBuilder` will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- Initial release
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+</file>
+
+<file path="CODE_OF_CONDUCT.md">
+# Contributor Covenant Code of Conduct
+
+## Our Pledge
+
+We as members, contributors, and leaders pledge to make participation in our
+community a harassment-free experience for everyone, regardless of age, body
+size, visible or invisible disability, ethnicity, sex characteristics, gender
+identity and expression, level of experience, education, socio-economic status,
+nationality, personal appearance, race, religion, or sexual identity
+and orientation.
+
+We pledge to act and interact in ways that contribute to an open, welcoming,
+diverse, inclusive, and healthy community.
+
+## Our Standards
+
+Examples of behavior that contributes to a positive environment for our
+community include:
+
+* Demonstrating empathy and kindness toward other people
+* Being respectful of differing opinions, viewpoints, and experiences
+* Giving and gracefully accepting constructive feedback
+* Accepting responsibility and apologizing to those affected by our mistakes,
+  and learning from the experience
+* Focusing on what is best not just for us as individuals, but for the
+  overall community
+
+Examples of unacceptable behavior include:
+
+* The use of sexualized language or imagery, and sexual attention or
+  advances of any kind
+* Trolling, insulting or derogatory comments, and personal or political attacks
+* Public or private harassment
+* Publishing others' private information, such as a physical or email
+  address, without their explicit permission
+* Other conduct which could reasonably be considered inappropriate in a
+  professional setting
+
+## Enforcement Responsibilities
+
+Community leaders are responsible for clarifying and enforcing our standards of
+acceptable behavior and will take appropriate and fair corrective action in
+response to any behavior that they deem inappropriate, threatening, offensive,
+or harmful.
+
+## Scope
+
+This Code of Conduct applies within all community spaces, and also applies when
+an individual is officially representing the community in public spaces.
+
+## Enforcement
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be
+reported to the community leaders responsible for enforcement.
+
+All complaints will be reviewed and investigated promptly and fairly.
+
+All community leaders are obligated to respect the privacy and security of the
+reporter of any incident.
+
+## Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org),
+version 2.0, available at https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
+</file>
+
+<file path="LICENSE.md">
+MIT License
+
+Copyright (c) 2025 Fady Mondy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</file>
+
+<file path="package.json">
+{
+    "name": "{{ package }}",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "format": "prettier --write resources/",
+        "format:check": "prettier --check resources/",
+        "lint": "eslint . --fix"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.19.0",
+        "@tailwindcss/vite": "^4.1.11",
+        "@types/node": "^22.13.5",
+        "@vitejs/plugin-vue": "^6.0.0",
+        "@vue/eslint-config-typescript": "^14.3.0",
+        "eslint": "^9.17.0",
+        "eslint-config-prettier": "^10.0.1",
+        "eslint-plugin-vue": "^9.32.0",
+        "prettier": "^3.4.2",
+        "prettier-plugin-organize-imports": "^4.1.0",
+        "prettier-plugin-tailwindcss": "^0.6.11",
+        "typescript": "^5.2.2",
+        "typescript-eslint": "^8.23.0",
+        "vite": "^7.0.4",
+        "vue-tsc": "^2.2.4"
+    },
+    "dependencies": {
+        "laravel-vite-plugin": "^2.0.0",
+        "tailwindcss": "^4.1.1",
+        "vue": "^3.5.13"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": "4.9.5",
+        "@rollup/rollup-win32-x64-msvc": "4.9.5",
+        "@tailwindcss/oxide-linux-x64-gnu": "^4.0.1",
+        "@tailwindcss/oxide-win32-x64-msvc": "^4.0.1",
+        "lightningcss-linux-x64-gnu": "^1.29.1",
+        "lightningcss-win32-x64-msvc": "^1.29.1"
+    }
+}
+</file>
+
+<file path="phpstan.neon">
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+    tmpDir: build/phpstan
+    checkOctaneCompatibility: true
+    checkModelProperties: true
+    checkMissingIterableValueType: false
+</file>
+
+<file path="phpunit.xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Test Suite">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+    <coverage>
+        <report>
+            <html outputDirectory="build/coverage"/>
+            <text outputFile="build/coverage.txt"/>
+            <clover outputFile="build/logs/clover.xml"/>
+        </report>
+    </coverage>
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </source>
+</phpunit>
+</file>
+
+<file path="pint.json">
+{
+    "preset": "laravel",
+    "rules": {
+        "simplified_null_return": true,
+        "braces": false,
+        "new_with_braces": {
+            "anonymous_class": false,
+            "named_class": false
+        }
+    }
+}
+</file>
+
+<file path="testbench.yaml">
+providers:
+  - Laravilt\QueryBuilder\QueryBuilderServiceProvider
+
+workbench:
+  welcome: false
+  discovers:
+    web: true
+    api: true
+    commands: true
+    components: true
+</file>
+
+<file path="vite.plugin.js">
+import { resolve } from 'path';
+
+export default function QueryBuilderPlugin() {
+    const pluginPath = resolve(__dirname);
+
+    return {
+        name: 'query-builder-plugin',
+        config: () => ({
+            build: {
+                rollupOptions: {
+                    input: {
+                        'query-builder': resolve(pluginPath, 'resources/js/app.js'),
+                    },
+                    output: {
+                        entryFileNames: 'js/[name].js',
+                        chunkFileNames: 'js/[name].js',
+                        assetFileNames: (assetInfo) => {
+                            if (assetInfo.name.endsWith('.css')) {
+                                return 'css/[name][extname]';
+                            }
+                            return 'assets/[name][extname]';
+                        },
+                    },
+                },
+                outDir: resolve(pluginPath, 'dist'),
+                emptyOutDir: true,
+            },
+        }),
+    };
+}
+</file>
+
+<file path=".github/workflows/fix-php-code-styling.yml">
+name: Fix PHP Code Styling
+
+on:
+  push:
+    branches: [ "master", "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  php-code-styling:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Fix PHP code style issues
+        uses: aglipanci/laravel-pint-action@2.6
+        with:
+          preset: laravel
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Fix styling
+</file>
+
+<file path=".github/workflows/tests.yml">
+name: Tests
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.3, 8.4]
+        laravel: [12.*]
+        dependency-version: [prefer-stable]
+
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.dependency-version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          coverage: none
+
+      - name: Setup problem matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+
+      - name: Execute tests
+        run: vendor/bin/pest
+</file>
+
+<file path="src/Commands/InstallQueryBuilderCommand.php">
+<?php
+
+namespace Laravilt\QueryBuilder\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
+
+class InstallQueryBuilderCommand extends Command
+{
+    /**
+     * The name and signature of the console command.
+     */
+    protected $signature = 'query-builder:install
+                            {--force : Overwrite existing files}
+                            {--without-assets : Skip asset publishing}';
+
+    /**
+     * The console command description.
+     */
+    protected $description = 'Install QueryBuilder plugin';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(): int
+    {
+        $this->info('Installing {{ name }} plugin...');
+        $this->newLine();
+
+        // Publish config
+        $this->publishConfig();
+
+        $this->publishAssets();
+        if (! $this->option('without-assets')) {
+            $this->buildAssets();
+        }
+        $this->newLine();
+        $this->info('✅ {{ name }} plugin installed successfully!');
+        $this->newLine();
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * Publish configuration file.
+     */
+    protected function publishConfig(): void
+    {
+        $this->info('Publishing configuration...');
+
+        $params = ['--tag' => '{{ config }}-config'];
+
+        if ($this->option('force')) {
+            $params['--force'] = true;
+        }
+
+        Artisan::call('vendor:publish', $params, $this->output);
+    }
+
+    protected function publishAssets(): void
+    {
+        $this->info('Publishing assets...');
+
+        $this->call('vendor:publish', [
+            '--tag' => 'query-builder-assets',
+            '--force' => true,
+        ]);
+
+        $this->components->success('Assets published successfully!');
+    }
+
+    protected function buildAssets(): void
+    {
+        $this->info('Building assets...');
+
+        $process = Process::path(base_path('packages/laravilt/query-builder'))
+            ->run('npm install && npm run build');
+
+        if ($process->successful()) {
+            $this->components->success('Assets built successfully!');
+        } else {
+            $this->components->error('Failed to build assets: '.$process->errorOutput());
+        }
+    }
+}
+</file>
+
+<file path="src/QueryBuilder.php">
+<?php
+
+declare(strict_types=1);
+
+namespace Laravilt\QueryBuilder;
+
+use Illuminate\Database\Eloquent\Builder;
+use Laravilt\QueryBuilder\Filters\Filter;
+use Laravilt\Support\Contracts\InertiaSerializable;
+
+class QueryBuilder implements InertiaSerializable
+{
+    /** @var array<int, Filter> */
+    protected array $filters = [];
+
+    /** @var array<int, Sort> */
+    protected array $sorts = [];
+
+    /** @var array<string, mixed> */
+    protected array $filterValues = [];
+
+    protected ?string $search = null;
+
+    protected ?string $sortBy = null;
+
+    protected ?string $sortDirection = 'asc';
+
+    protected int $perPage = 15;
+
+    protected bool $paginated = true;
+
+    /**
+     * @param  array<int, Filter>  $filters
+     */
+    public function filters(array $filters): static
+    {
+        $this->filters = $filters;
+
+        return $this;
+    }
+
+    public function addFilter(Filter $filter): static
+    {
+        $this->filters[] = $filter;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<int, Sort>  $sorts
+     */
+    public function sorts(array $sorts): static
+    {
+        $this->sorts = $sorts;
+
+        return $this;
+    }
+
+    public function addSort(Sort $sort): static
+    {
+        $this->sorts[] = $sort;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $values
+     */
+    public function applyFilters(array $values): static
+    {
+        $this->filterValues = $values;
+
+        return $this;
+    }
+
+    public function search(?string $search): static
+    {
+        $this->search = $search;
+
+        return $this;
+    }
+
+    public function sortBy(?string $column, ?string $direction = 'asc'): static
+    {
+        $this->sortBy = $column;
+        // Validate sort direction
+        $this->sortDirection = in_array($direction, ['asc', 'desc']) ? $direction : 'asc';
+
+        return $this;
+    }
+
+    public function perPage(int $perPage): static
+    {
+        $this->perPage = $perPage;
+
+        return $this;
+    }
+
+    public function paginated(bool $condition = true): static
+    {
+        $this->paginated = $condition;
+
+        return $this;
+    }
+
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     * @return Builder<\Illuminate\Database\Eloquent\Model>
+     */
+    public function apply(Builder $query): Builder
+    {
+        // Apply filters
+        foreach ($this->filters as $filter) {
+            $value = $this->filterValues[$filter->getName()] ?? null;
+
+            if ($value !== null && $value !== '') {
+                $filter->apply($query, $value);
+            }
+        }
+
+        // Apply search if configured
+        if ($this->search !== null && $this->search !== '') {
+            $this->applySearch($query);
+        }
+
+        // Apply sorting
+        if ($this->sortBy !== null) {
+            $query->orderBy($this->sortBy, $this->sortDirection ?? 'asc');
+        }
+
+        return $query;
+    }
+
+    /**
+     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     */
+    protected function applySearch(Builder $query): void
+    {
+        // Search implementation can be customized per use case
+        // This is a basic implementation
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toInertiaProps(): array
+    {
+        return [
+            'filters' => array_map(
+                fn (Filter $filter) => $filter->toInertiaProps(),
+                $this->filters
+            ),
+            'sorts' => array_map(
+                fn (Sort $sort) => $sort->toInertiaProps(),
+                $this->sorts
+            ),
+            'filterValues' => $this->filterValues,
+            'search' => $this->search,
+            'sortBy' => $this->sortBy,
+            'sortDirection' => $this->sortDirection,
+            'perPage' => $this->perPage,
+            'paginated' => $this->paginated,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toFlutterProps(): array
+    {
+        return [
+            'filters' => array_map(
+                fn (Filter $filter) => $filter->toFlutterProps(),
+                $this->filters
+            ),
+            'sorts' => array_map(
+                fn (Sort $sort) => $sort->toFlutterProps(),
+                $this->sorts
+            ),
+            'filterValues' => $this->filterValues,
+            'search' => $this->search,
+            'sortBy' => $this->sortBy,
+            'sortDirection' => $this->sortDirection,
+            'perPage' => $this->perPage,
+            'paginated' => $this->paginated,
+        ];
+    }
+}
+</file>
+
+<file path="src/QueryBuilderServiceProvider.php">
+<?php
+
+declare(strict_types=1);
+
+namespace Laravilt\QueryBuilder;
+
+use Illuminate\Support\ServiceProvider;
+
+class QueryBuilderServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        //
+    }
+
+    public function boot(): void
+    {
+        //
+    }
+}
+</file>
+
+<file path="tests/TestCase.php">
+<?php
+
+namespace Laravilt\QueryBuilder\Tests;
+
+use Orchestra\Testbench\TestCase as Orchestra;
+
+class TestCase extends Orchestra
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Additional setup if needed
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [
+            \Laravilt\QueryBuilder\QueryBuilderServiceProvider::class,
+        ];
+    }
+
+    protected function getEnvironmentSetUp($app): void
+    {
+        // Setup environment for testing
+        config()->set('database.default', 'testing');
+    }
+}
+</file>
+
+<file path="README.md">
+![QueryBuilder](./arts/screenshot.jpg)
+
+# Laravilt Query Builder
+
+[![Latest Stable Version](https://poser.pugx.org/laravilt/query-builder/version.svg)](https://packagist.org/packages/laravilt/query-builder)
+[![License](https://poser.pugx.org/laravilt/query-builder/license.svg)](https://packagist.org/packages/laravilt/query-builder)
+[![Downloads](https://poser.pugx.org/laravilt/query-builder/d/total.svg)](https://packagist.org/packages/laravilt/query-builder)
+[![Dependabot Updates](https://github.com/laravilt/query-builder/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/laravilt/query-builder/actions/workflows/dependabot/dependabot-updates)
+[![PHP Code Styling](https://github.com/laravilt/query-builder/actions/workflows/fix-php-code-styling.yml/badge.svg)](https://github.com/laravilt/query-builder/actions/workflows/fix-php-code-styling.yml)
+[![Tests](https://github.com/laravilt/query-builder/actions/workflows/tests.yml/badge.svg)](https://github.com/laravilt/query-builder/actions/workflows/tests.yml)
+
+Complete query builder system with filters, sorting, search, and pagination for Laravilt. Build powerful, filterable data queries with support for multiple filter types, custom sorts, full-text search, and seamless Inertia.js integration.
+
+## Features
+
+- 🔍 **Advanced Filtering** - Multiple filter types (select, date, range, boolean)
+- ↕️ **Sorting** - Custom sort options with direction control
+- 🔎 **Search** - Full-text search across multiple columns
+- 📄 **Pagination** - Built-in pagination support
+- ⚡ **Inertia Integration** - Seamless Vue 3 integration
+- 🎯 **Eloquent Compatible** - Works with Laravel's query builder
+- 🔧 **Customizable** - Extensible filters and sorts
+
+## Installation
+
+```bash
+composer require laravilt/query-builder
+```
+
+The package will automatically register its service provider.
+
+## Quick Start
+
+```php
+use Laravilt\QueryBuilder\QueryBuilder;
+use Laravilt\QueryBuilder\Filters\SelectFilter;
+use Laravilt\QueryBuilder\Filters\DateFilter;
+use Laravilt\QueryBuilder\Sort;
+
+$queryBuilder = new QueryBuilder();
+
+$queryBuilder
+    ->filters([
+        SelectFilter::make('status')
+            ->options([
+                'active' => 'Active',
+                'inactive' => 'Inactive',
+            ]),
+
+        DateFilter::make('created_at')
+            ->label('Created Date'),
+    ])
+    ->sorts([
+        Sort::make('name')->label('Name'),
+        Sort::make('created_at')->label('Date'),
+    ])
+    ->search('search query')
+    ->sortBy('created_at', 'desc')
+    ->perPage(25)
+    ->apply(User::query())
+    ->paginate();
+```
+
+## Filter Types
+
+### Select Filter
+
+```php
+use Laravilt\QueryBuilder\Filters\SelectFilter;
+
+SelectFilter::make('status')
+    ->label('Status')
+    ->options([
+        'active' => 'Active',
+        'inactive' => 'Inactive',
+        'pending' => 'Pending',
+    ])
+    ->multiple(); // Allow multiple selections
+```
+
+### Date Filter
+
+```php
+use Laravilt\QueryBuilder\Filters\DateFilter;
+
+DateFilter::make('created_at')
+    ->label('Created Date')
+    ->between(); // Date range filter
+```
+
+### Range Filter
+
+```php
+use Laravilt\QueryBuilder\Filters\RangeFilter;
+
+RangeFilter::make('price')
+    ->label('Price Range')
+    ->min(0)
+    ->max(1000);
+```
+
+### Boolean Filter
+
+```php
+use Laravilt\QueryBuilder\Filters\BooleanFilter;
+
+BooleanFilter::make('is_active')
+    ->label('Active Only');
+```
+
+## Sorting
+
+```php
+use Laravilt\QueryBuilder\Sort;
+
+Sort::make('name')
+    ->label('Name')
+    ->default(); // Set as default sort
+
+Sort::make('created_at')
+    ->label('Date')
+    ->desc(); // Default direction: desc
+```
+
+## Search
+
+```php
+$queryBuilder->search($request->get('search'));
+
+// Search across specific columns
+$queryBuilder->searchColumns(['name', 'email', 'phone']);
+```
+
+## Pagination
+
+```php
+// Enable pagination (default)
+$queryBuilder->paginated();
+
+// Set per page
+$queryBuilder->perPage(25);
+
+// Disable pagination
+$queryBuilder->paginated(false);
+```
+
+## Applying to Eloquent Query
+
+```php
+$query = User::query();
+
+$queryBuilder
+    ->filters([...])
+    ->apply($query)
+    ->paginate();
+```
+
+## Inertia Integration
+
+```php
+use App\QueryBuilders\UserQueryBuilder;
+use Inertia\Inertia;
+
+public function index(Request $request)
+{
+    $queryBuilder = new UserQueryBuilder();
+
+    $users = $queryBuilder
+        ->fromRequest($request)
+        ->apply(User::query())
+        ->paginate();
+
+    return Inertia::render('Users/Index', [
+        'users' => $users,
+        'queryBuilder' => $queryBuilder->toInertiaProps(),
+    ]);
+}
+```
+
+## Vue 3 Component
+
+```vue
+<template>
+  <div>
+    <!-- Filters -->
+    <QueryBuilderFilters
+      :filters="queryBuilder.filters"
+      @update="handleFilterUpdate"
+    />
+
+    <!-- Search -->
+    <SearchInput
+      v-model="search"
+      @search="handleSearch"
+    />
+
+    <!-- Results -->
+    <DataTable :data="users" />
+
+    <!-- Pagination -->
+    <Pagination :data="users" />
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { router } from '@inertiajs/vue3'
+
+const props = defineProps({
+  users: Object,
+  queryBuilder: Object
+})
+
+const handleFilterUpdate = (filters) => {
+  router.get('/users', { filters }, { preserveState: true })
+}
+</script>
+```
+
+## Configuration
+
+Publish the config file:
+
+```bash
+php artisan vendor:publish --tag="laravilt-query-builder-config"
+```
+
+## Assets
+
+Publish the plugin assets:
+
+```bash
+php artisan vendor:publish --tag="laravilt-query-builder-assets"
+```
+
+## Testing
+
+```bash
+composer test
+```
+
+## Code Style
+
+```bash
+composer format
+```
+
+## Static Analysis
+
+```bash
+composer analyse
+```
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+</file>
+
+<file path="composer.json">
+{
+    "name": "laravilt/query-builder",
+    "description": "Complete query builder system with filters, sorting, search, and pagination. Build powerful, filterable data queries with support for multiple filter types, custom sorts, full-text search, and seamless Inertia.js integration.",
+    "version": "1.0.1",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "laravilt",
+        "query-builder",
+        "filters",
+        "sorting",
+        "search",
+        "pagination",
+        "eloquent",
+        "inertia",
+        "vue"
+    ],
+    "authors": [
+        {
+            "name": "Fady Mondy",
+            "email": "info@3x1.io"
+        }
+    ],
+    "require": {
+        "php": "^8.3|^8.4",
+        "spatie/laravel-package-tools": "^1.14",
+        "illuminate/support": "^12.0",
+        "illuminate/database": "^12.0",
+        "laravilt/support": "^v1.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^2.9||^3.0",
+        "laravel/pint": "^1.14",
+        "nunomaduro/collision": "^8.1.1||^7.10.0",
+        "orchestra/testbench": "^10.0",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-arch": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "pestphp/pest-plugin-livewire": "^3.0",
+        "pestphp/pest-plugin-type-coverage": "^3.5",
+        "phpstan/extension-installer": "^1.3||^2.0",
+        "phpstan/phpstan-deprecation-rules": "^1.1||^2.0",
+        "phpstan/phpstan-phpunit": "^1.3||^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laravilt\\QueryBuilder\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Laravilt\\QueryBuilder\\Tests\\": "tests/",
+            "Laravilt\\QueryBuilder\\Tests\\Database\\Factories\\": "tests/database/factories",
+            "Laravilt\\QueryBuilder\\Tests\\Database\\Seeders\\": "tests/database/seeders"
+        }
+    },
+    "scripts": {
+        "testbench": "vendor/bin/testbench package:discover --ansi",
+        "db": "vendor/bin/testbench package:create-sqlite-db && vendor/bin/testbench migrate",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=512M",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laravilt\\QueryBuilder\\QueryBuilderServiceProvider"
+            ]
+        }
+    },
+    "prefer-stable": true
+}
+</file>
+
+</files>
