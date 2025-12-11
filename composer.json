@@ -1,7 +1,7 @@
 {
     "name": "laravilt/query-builder",
     "description": "Complete query builder system with filters, sorting, search, and pagination. Build powerful, filterable data queries with support for multiple filter types, custom sorts, full-text search, and seamless Inertia.js integration.",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "type": "library",
     "license": "MIT",
     "keywords": [
