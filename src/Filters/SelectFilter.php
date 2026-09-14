@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Laravilt\QueryBuilder\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class SelectFilter extends Filter
 {
@@ -40,7 +41,7 @@ class SelectFilter extends Filter
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     * @param  Builder<Model>  $query
      */
     protected function applyDefault(Builder $query, mixed $value): void
     {

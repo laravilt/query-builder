@@ -6,6 +6,7 @@ namespace Laravilt\QueryBuilder\Filters;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Laravilt\Support\Contracts\FlutterSerializable;
 use Laravilt\Support\Contracts\InertiaSerializable;
 
@@ -94,7 +95,7 @@ abstract class Filter implements FlutterSerializable, InertiaSerializable
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     * @param  Builder<Model>  $query
      */
     public function apply(Builder $query, mixed $value): void
     {
@@ -106,7 +107,7 @@ abstract class Filter implements FlutterSerializable, InertiaSerializable
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     * @param  Builder<Model>  $query
      */
     abstract protected function applyDefault(Builder $query, mixed $value): void;
 

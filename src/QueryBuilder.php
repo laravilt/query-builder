@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Laravilt\QueryBuilder;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Laravilt\QueryBuilder\Filters\Filter;
 use Laravilt\Support\Contracts\InertiaSerializable;
 
@@ -104,8 +105,8 @@ class QueryBuilder implements InertiaSerializable
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
-     * @return Builder<\Illuminate\Database\Eloquent\Model>
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
      */
     public function apply(Builder $query): Builder
     {
@@ -132,7 +133,7 @@ class QueryBuilder implements InertiaSerializable
     }
 
     /**
-     * @param  Builder<\Illuminate\Database\Eloquent\Model>  $query
+     * @param  Builder<Model>  $query
      */
     protected function applySearch(Builder $query): void
     {
