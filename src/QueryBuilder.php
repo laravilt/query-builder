@@ -22,6 +22,9 @@ class QueryBuilder implements InertiaSerializable
 
     protected ?string $search = null;
 
+    /** @var array<int, string> */
+    protected array $searchableColumns = [];
+
     protected ?string $sortBy = null;
 
     protected ?string $sortDirection = 'asc';
@@ -81,6 +84,30 @@ class QueryBuilder implements InertiaSerializable
         return $this;
     }
 
+    /**
+     * Columns the search term is matched against (OR'd together). Use dot notation
+     * (e.g. `author.name`) to search a column on a relation.
+     *
+     * @param  array<int, string>|string  $columns
+     */
+    public function searchable(array|string $columns): static
+    {
+        $this->searchableColumns = array_values(array_filter(
+            is_array($columns) ? $columns : func_get_args(),
+            fn ($column) => is_string($column) && $column !== '',
+        ));
+
+        return $this;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getSearchableColumns(): array
+    {
+        return $this->searchableColumns;
+    }
+
     public function sortBy(?string $column, ?string $direction = 'asc'): static
     {
         $this->sortBy = $column;
@@ -122,9 +149,7 @@ class QueryBuilder implements InertiaSerializable
         }
 
         // Apply search if configured
-        if ($this->search !== null && $this->search !== '') {
-            $this->applySearch($query);
-        }
+        $this->applySearch($query);
 
         // Apply sorting
         if ($this->sortBy !== null) {
@@ -163,8 +188,63 @@ class QueryBuilder implements InertiaSerializable
      */
     protected function applySearch(Builder $query): void
     {
-        // Search implementation can be customized per use case
-        // This is a basic implementation
+        $term = trim((string) $this->search);
+
+        if ($term === '' || $this->searchableColumns === []) {
+            return;
+        }
+
+        $pattern = '%'.$this->escapeLike($term).'%';
+
+        $query->where(function (Builder $query) use ($pattern): void {
+            foreach ($this->searchableColumns as $column) {
+                $relation = str_contains($column, '.') ? substr($column, 0, (int) strrpos($column, '.')) : null;
+
+                if ($relation !== null && $this->isRelationPath($query->getModel(), $relation)) {
+                    $relatedColumn = substr($column, strrpos($column, '.') + 1);
+
+                    $query->orWhereHas($relation, function (Builder $query) use ($relatedColumn, $pattern): void {
+                        $this->whereLike($query, $query->qualifyColumn($relatedColumn), $pattern);
+                    });
+
+                    continue;
+                }
+
+                $query->orWhere(function (Builder $query) use ($column, $pattern): void {
+                    $this->whereLike($query, $column, $pattern);
+                });
+            }
+        });
+    }
+
+    /**
+     * @param  Builder<Model>  $query
+     */
+    protected function whereLike(Builder $query, string $column, string $pattern): void
+    {
+        $grammar = $query->getQuery()->getGrammar();
+
+        // An explicit ESCAPE clause makes the backslash escaping portable (sqlite and
+        // pgsql have no default escape character; mysql's default is already '\').
+        $query->whereRaw($grammar->wrap($column).' like ? escape ?', [$pattern, '\\']);
+    }
+
+    protected function escapeLike(string $value): string
+    {
+        return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $value);
+    }
+
+    protected function isRelationPath(Model $model, string $path): bool
+    {
+        foreach (explode('.', $path) as $segment) {
+            if (! $model->isRelation($segment)) {
+                return false;
+            }
+
+            $model = $model->{$segment}()->getRelated();
+        }
+
+        return true;
     }
 
     /**
