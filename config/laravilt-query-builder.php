@@ -10,7 +10,7 @@ return [
     |
     */
 
-    'enabled' => env('LARAVILT_QUERY-BUILDER_ENABLED', true),
+    'enabled' => env('LARAVILT_QUERY_BUILDER_ENABLED', true),
 
     // Add your configuration options here
 ];

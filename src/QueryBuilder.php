@@ -85,7 +85,8 @@ class QueryBuilder implements InertiaSerializable
     {
         $this->sortBy = $column;
         // Validate sort direction
-        $this->sortDirection = in_array($direction, ['asc', 'desc']) ? $direction : 'asc';
+        $direction = $direction === null ? null : strtolower($direction);
+        $this->sortDirection = in_array($direction, ['asc', 'desc'], true) ? $direction : 'asc';
 
         return $this;
     }
@@ -114,7 +115,8 @@ class QueryBuilder implements InertiaSerializable
         foreach ($this->filters as $filter) {
             $value = $this->filterValues[$filter->getName()] ?? null;
 
-            if ($value !== null && $value !== '') {
+            // A cleared multi-select arrives as [], which would otherwise become `whereIn(col, [])` and match nothing
+            if ($value !== null && $value !== '' && $value !== []) {
                 $filter->apply($query, $value);
             }
         }
@@ -126,10 +128,34 @@ class QueryBuilder implements InertiaSerializable
 
         // Apply sorting
         if ($this->sortBy !== null) {
-            $query->orderBy($this->sortBy, $this->sortDirection ?? 'asc');
+            $column = $this->resolveSortColumn($this->sortBy);
+
+            if ($column !== null) {
+                $query->orderBy($column, $this->sortDirection ?? 'asc');
+            }
         }
 
         return $query;
+    }
+
+    /**
+     * Map the requested sort to its column. When sorts are registered they act as an
+     * allow-list (the request carries the Sort name, which may differ from its column);
+     * without registered sorts the value is used as the column directly.
+     */
+    protected function resolveSortColumn(string $sortBy): ?string
+    {
+        if ($this->sorts === []) {
+            return $sortBy;
+        }
+
+        foreach ($this->sorts as $sort) {
+            if ($sort->getName() === $sortBy) {
+                return $sort->getColumn();
+            }
+        }
+
+        return null;
     }
 
     /**
