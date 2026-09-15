@@ -73,11 +73,16 @@ class DateFilter extends Filter
     {
         $column = $this->getColumn();
 
-        if ($this->operator === 'between' && is_array($value) && count($value) === 2) {
-            $query->whereBetween($column, $value);
-        } else {
-            $query->where($column, $this->operator, $value);
+        if ($this->operator === 'between') {
+            // `where($column, 'between', ...)` is invalid SQL, so an incomplete range is ignored
+            if (is_array($value) && count($value) === 2) {
+                $query->whereBetween($column, array_values($value));
+            }
+
+            return;
         }
+
+        $query->where($column, $this->operator, $value);
     }
 
     /**

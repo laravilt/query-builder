@@ -4,6 +4,7 @@ namespace Laravilt\QueryBuilder\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Process;
 
 class InstallQueryBuilderCommand extends Command
 {
@@ -24,7 +25,7 @@ class InstallQueryBuilderCommand extends Command
      */
     public function handle(): int
     {
-        $this->info('Installing {{ name }} plugin...');
+        $this->info('Installing QueryBuilder plugin...');
         $this->newLine();
 
         // Publish config
@@ -35,7 +36,7 @@ class InstallQueryBuilderCommand extends Command
             $this->buildAssets();
         }
         $this->newLine();
-        $this->info('✅ {{ name }} plugin installed successfully!');
+        $this->info('✅ QueryBuilder plugin installed successfully!');
         $this->newLine();
 
         return self::SUCCESS;
@@ -48,7 +49,7 @@ class InstallQueryBuilderCommand extends Command
     {
         $this->info('Publishing configuration...');
 
-        $params = ['--tag' => '{{ config }}-config'];
+        $params = ['--tag' => 'laravilt-query-builder-config'];
 
         if ($this->option('force')) {
             $params['--force'] = true;
